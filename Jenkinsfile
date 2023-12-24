@@ -10,7 +10,7 @@ pipeline {
         agent {
             node {
                 label "Build-server"
-                customWorkspace "/home/ubuntu/jenkins/multi-branch/devops-training-$ENV/"
+                customWorkspace "/home/chung/Documents/devops-training-$ENV/"
                 }
             }
         environment {
@@ -19,32 +19,31 @@ pipeline {
          steps {
             sh "docker build nodejs/. -t devops-training-nodejs-$ENV:latest --build-arg BUILD_ENV=$ENV -f nodejs/Dockerfile"
 
-
-            sh "cat docker.txt | docker login -u manhhoangseta --password-stdin"
+            sh "cat docker.txt | docker login -u christiando --password-stdin"
             // tag docker image
-            sh "docker tag devops-training-nodejs-$ENV:latest [dockerhub-repo]:$TAG"
+            sh "docker tag devops-training-nodejs-$ENV:latest nodejs-devops-training:$TAG"
 
             //push docker image to docker hub
-            sh "docker push [dockerhub-repo]:$TAG"
+            sh "docker push nodejs-devops-training:$TAG"
 
 	    // remove docker image to reduce space on build server	
-            sh "docker rmi -f [dockerhub-repo]:$TAG"
+            sh "docker rmi -f nodejs-devops-training:$TAG"
 
            }
          
        }
-	  stage ("Deploy ") {
+	  stage ("Deploy") {
 	    agent {
         node {
             label "Target-Server"
-                customWorkspace "/home/ubuntu/jenkins/multi-branch/devops-training-$ENV/"
+                customWorkspace "/home/chung/Documents/devops-training-$ENV/"
             }
         }
         environment {
             TAG = sh(returnStdout: true, script: "git rev-parse -short=10 HEAD | tail -n +2").trim()
         }
 	steps {
-            sh "sed -i 's/{tag}/$TAG/g' /home/ubuntu/jenkins/multi-branch/devops-training-$ENV/docker-compose.yaml"
+            sh "sed -i 's/{tag}/$TAG/g' /home/chung/Documents/devops-training-$ENV/docker-compose.yaml"
             sh "docker compose up -d"
         }      
        }

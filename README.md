@@ -1,2 +1,2 @@
-# devops-training
+# Devops-training
 Basic devops trainning

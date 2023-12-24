@@ -35,12 +35,12 @@ app.use(express.json());
 
 // Middleware to check if the user exists
 const checkUserExists = async (req, res, next) => {
-  const userId = req.params.id;
+  const userId = req?.params?.id;
 
   try {
     const [rows] = await pool.execute('SELECT * FROM users WHERE id = ?', [userId]);
 
-    if (!rows.length) {
+    if (!rows?.length) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
@@ -48,7 +48,7 @@ const checkUserExists = async (req, res, next) => {
     req.user = rows[0];
     next();
   } catch (err) {
-    console.error(err.message);
+    console.error(err?.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
