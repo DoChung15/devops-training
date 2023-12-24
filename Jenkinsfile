@@ -21,13 +21,13 @@ pipeline {
 
             sh "cat docker.txt | docker login -u christiando --password-stdin"
             // tag docker image
-            sh "docker tag devops-training-nodejs-$ENV:latest nodejs-devops-training:$TAG"
+            sh "docker tag devops-training-nodejs-$ENV:latest christiando/nodejs-devops-training:$TAG"
 
             //push docker image to docker hub
-            sh "docker push nodejs-devops-training:$TAG"
+            sh "docker push christiando/nodejs-devops-training:$TAG"
 
 	    // remove docker image to reduce space on build server	
-            sh "docker rmi -f nodejs-devops-training:$TAG"
+            sh "docker rmi -f christiando/nodejs-devops-training:$TAG"
 
            }
          
